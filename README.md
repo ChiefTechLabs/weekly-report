@@ -1,0 +1,170 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ChrefTech/weekly-report/main/.github/logo.svg" alt="weekly-report" width="120" />
+</p>
+
+<h1 align="center">weekly-report</h1>
+
+<p align="center">
+  <strong>OpenCode Skill — 自动生成结构化工作周报</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ChrefTech/weekly-report/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License" /></a>
+  <a href="https://github.com/ChrefTech/weekly-report"><img src="https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey" alt="Platform" /></a>
+  <a href="https://github.com/ChrefTech/weekly-report"><img src="https://img.shields.io/badge/opencode-skill-7c3aed" alt="OpenCode Skill" /></a>
+  <img src="https://img.shields.io/badge/language-SQL%20%7C%20Shell%20%7C%20PowerShell-333" alt="Language" />
+</p>
+
+---
+
+## What It Does
+
+当你对 OpenCode 说「写周报」时，这个 skill 会：
+
+- 从 OpenCode 的 **SQLite 数据库** 直接提取所有 session 记录（绕过内置 `session_list` 工具的项目路径限制）
+- 扫描所有 `.omo/plans/` 下的计划文件，统计 checkbox 完成进度
+- 读取 `boulder.json` 识别当前活跃计划
+- 按**项目维度**汇总，生成三个结构化 markdown 文件
+
+```
+week-report/2026-06-08_2026-06-14/
+├── 01-工作周报.md        ← 按项目汇总已完成工作 + 量化统计
+├── 02-未完成事项.md       ← 所有开放计划进度 + 预计完成时间
+└── 03-协调与帮助.md       ← 跨项目依赖、资源需求、优先级建议
+```
+
+## Why Direct DB Access
+
+内置的 `session_list` 工具默认只返回**当前工作目录**的 session。如果你在不同项目之间切换（例如 `~/Documents/geo`、`~/.ws/OMRobot`），它会漏掉其他项目的 session。
+
+本 skill **直接 JOIN session + project + project_directory 三表查询**，确保覆盖所有项目。
+
+```mermaid
+flowchart LR
+    A[用户: 写周报] --> B[检测平台 Linux/Win]
+    B --> C[定位 opencode.db]
+    C --> D["JOIN session + project<br/>+ project_directory"]
+    D --> E[按项目分组统计]
+    E --> F[扫描 .omo/plans/ 进度]
+    F --> G[读取 boulder.json 活跃计划]
+    G --> H[生成 3 个 md 文件]
+```
+
+## Installation
+
+### Quick Install
+
+```bash
+git clone https://github.com/ChrefTech/weekly-report.git ~/.agents/skills/weekly-report
+```
+
+Restart OpenCode. Done.
+
+### Manual Download
+
+```bash
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/ChrefTech/weekly-report/main/SKILL.md \
+  -o ~/.agents/skills/weekly-report/SKILL.md
+
+# Windows PowerShell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ChrefTech/weekly-report/main/SKILL.md" \
+  -OutFile "$env:USERPROFILE\.agents\skills\weekly-report\SKILL.md"
+```
+
+See [INSTALL.md](INSTALL.md) for detailed platform-specific instructions.
+
+## Usage
+
+直接对 OpenCode 说：
+
+| 触发短语 | 效果 |
+|---------|------|
+| 「写周报」/「上周总结」 | 生成上周一至周日的报告 |
+| 「本周工作汇报」 | 生成本周一至今天的报告 |
+| 「weekly report」 | 同上（英文触发） |
+| `/weekly-report` | 显式调用 skill |
+
+输出默认保存到 `~/Documents/week-report/<日期范围>/`。
+
+## Output Example
+
+### 01-工作周报.md
+
+```markdown
+## 一、Geo 内容平台
+203 sessions / 17M tokens / $10.75 | 周三-周日
+
+**已完成**
+- 修复登录后返回登录页的循环跳转 bug
+- 实现选题热度评分系统，接入真实百度指数数据
+- 完成管理后台四大模块...
+```
+
+### 02-未完成事项.md
+
+```markdown
+| 事项 | 计划文件 | 进度 | 预计完成 | 说明 |
+|------|---------|------|---------|------|
+| ▶ AI Chat 页面 | ai-chat-generate.md | 19/103 | 6/21 | 当前活跃计划 |
+| LangChain Agent | langchain-agent.md | 0/12 | 待定 | 尚未启动 |
+```
+
+### 03-协调与帮助.md
+
+```markdown
+## 跨项目依赖
+| 依赖关系 | 阻塞方 | 被阻塞方 | 影响 |
+|---------|--------|---------|------|
+| 感知模型产出 | OMRobot (6/22) | piper_ros D435i 管线 | 85 项未启动 |
+```
+
+## Requirements
+
+| Tool | Linux | Windows |
+|------|-------|---------|
+| `sqlite3` | Pre-installed | `winget install SQLite.SQLite` |
+| `python3` | Pre-installed | [python.org](https://python.org) |
+| `rg` (ripgrep) | `apt install ripgrep` | `winget install BurntSushi.ripgrep.MSVC` |
+
+Skill auto-falls back to `grep` / `findstr` if ripgrep is unavailable.
+
+## How It Works
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant DB as opencode.db
+    participant FS as File System
+
+    User->>Agent: 写周报
+    Agent->>DB: SELECT session JOIN project JOIN project_directory
+    DB-->>Agent: 按项目分组的 session 列表
+    Agent->>FS: find .omo/plans/*.md
+    FS-->>Agent: 计划文件 + checkbox 计数
+    Agent->>FS: read boulder.json
+    FS-->>Agent: 活跃计划列表
+    Agent->>FS: write 01-工作周报.md
+    Agent->>FS: write 02-未完成事项.md
+    Agent->>FS: write 03-协调与帮助.md
+    Agent-->>User: 输出路径 + 统计总览
+```
+
+## Project Structure
+
+```
+weekly-report/
+├── SKILL.md          ← 核心 skill 定义（273 行）
+├── INSTALL.md        ← LLM 导向的安装指南
+├── LICENSE           ← Apache 2.0
+└── README.md         ← 本文件
+```
+
+## Contributing
+
+欢迎提交 Issue 和 PR。如果你发现了新的 session 数据源、改进了查询效率，或者增加了新的报告维度，请贡献回来。
+
+## License
+
+Apache 2.0 © 2026 [ChrefTech](https://github.com/ChrefTech)
