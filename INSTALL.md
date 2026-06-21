@@ -30,19 +30,19 @@ Choose one of these methods:
 
 **Option A — Clone the repo (recommended, easy to update):**
 ```bash
-git clone https://github.com/ChrefTech/weekly-report.git ~/.agents/skills/weekly-report
+git clone https://github.com/ChiefTechLabs/weekly-report.git ~/.agents/skills/weekly-report
 ```
 
 **Option B — Direct download (no git needed):**
 
 Linux / macOS:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ChrefTech/weekly-report/main/SKILL.md -o ~/.agents/skills/weekly-report/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/ChiefTechLabs/weekly-report/main/SKILL.md -o ~/.agents/skills/weekly-report/SKILL.md
 ```
 
 Windows PowerShell:
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ChrefTech/weekly-report/main/SKILL.md" -OutFile "$env:USERPROFILE\.agents\skills\weekly-report\SKILL.md"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ChiefTechLabs/weekly-report/main/SKILL.md" -OutFile "$env:USERPROFILE\.agents\skills\weekly-report\SKILL.md"
 ```
 
 ### Step 3 — Verify installation

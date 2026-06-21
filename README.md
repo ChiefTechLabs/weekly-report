@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ChrefTech/weekly-report/main/.github/logo.svg" alt="weekly-report" width="120" />
+  <img src="https://raw.githubusercontent.com/ChiefTechLabs/weekly-report/main/.github/logo.svg" alt="weekly-report" width="120" />
 </p>
 
 <h1 align="center">weekly-report</h1>
@@ -9,9 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ChrefTech/weekly-report/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License" /></a>
-  <a href="https://github.com/ChrefTech/weekly-report"><img src="https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey" alt="Platform" /></a>
-  <a href="https://github.com/ChrefTech/weekly-report"><img src="https://img.shields.io/badge/opencode-skill-7c3aed" alt="OpenCode Skill" /></a>
+  <a href="https://github.com/ChiefTechLabs/weekly-report/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License" /></a>
+  <a href="https://github.com/ChiefTechLabs/weekly-report"><img src="https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey" alt="Platform" /></a>
+  <a href="https://github.com/ChiefTechLabs/weekly-report"><img src="https://img.shields.io/badge/opencode-skill-7c3aed" alt="OpenCode Skill" /></a>
   <img src="https://img.shields.io/badge/language-SQL%20%7C%20Shell%20%7C%20PowerShell-333" alt="Language" />
 </p>
 
@@ -59,7 +59,7 @@ flowchart LR
 把下面这段话发给你的 LLM agent，它会自动完成安装：
 
 ```markdown
-参考[INSTALL.md](https://raw.githubusercontent.com/ChrefTech/weekly-report/main/INSTALL.md) 安装weekly-report这个skill
+参考[INSTALL.md](https://raw.githubusercontent.com/ChiefTechLabs/weekly-report/main/INSTALL.md) 安装weekly-report这个skill
 ```
 
 ### 面向 LLM Agent
@@ -71,12 +71,12 @@ flowchart LR
 ```bash
 # Linux / macOS
 mkdir -p ~/.agents/skills/weekly-report
-curl -fsSL https://raw.githubusercontent.com/ChrefTech/weekly-report/main/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/ChiefTechLabs/weekly-report/main/SKILL.md \
   -o ~/.agents/skills/weekly-report/SKILL.md
 
 # Windows PowerShell
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills\weekly-report"
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ChrefTech/weekly-report/main/SKILL.md" \
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ChiefTechLabs/weekly-report/main/SKILL.md" \
   -OutFile "$env:USERPROFILE\.agents\skills\weekly-report\SKILL.md"
 ```
 
@@ -177,4 +177,4 @@ weekly-report/
 
 ## 许可证
 
-Apache 2.0 © 2026 [ChrefTech](https://github.com/ChrefTech)
+Apache 2.0 © 2026 [ChiefTechLabs](https://github.com/ChiefTechLabs)
